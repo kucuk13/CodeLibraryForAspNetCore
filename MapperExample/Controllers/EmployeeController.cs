@@ -17,7 +17,8 @@ namespace AutoMapperExample.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet(Name = "GetAll")]
+        [HttpGet]
+        [Route("GetAll")]
         public List<EmployeeDto> GetAll()
         {
             List<EmployeeDao> list = new List<EmployeeDao>()
