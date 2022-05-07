@@ -3,62 +3,63 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GenericRepositoryExample.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        private Context _context = null;
-        private DbSet<T> table = null;
+        private Context _context;
+        protected DbSet<TEntity> _entity => _context.Set<TEntity>();
 
         public GenericRepository()
         {
             this._context = new Context();
-            table = _context.Set<T>();
         }
 
-        public GenericRepository(Context _context)
+        public virtual TEntity Get(int id)
         {
-            this._context = _context;
-            table = _context.Set<T>();
+            return _entity.Find(id);
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual async Task<TEntity> GetAsync(int id)
         {
-            return table.ToList();
+            return await _entity.FindAsync(id);
         }
 
-        public T GetById(object id)
+        public virtual async Task<IEnumerable<TEntity>> GetListAsync()
         {
-            return table.Find(id);
+            return await _entity.ToListAsync();
         }
 
-        public void Insert(T obj)
+        public virtual async Task<int> InsertAsync(TEntity entity)
         {
-            obj.CreatedDateTime = DateTime.Now;
-            table.Add(obj);
+            entity.CreatedDateTime = DateTime.Now;
+            entity.CreatedMemberId = 1;
+            entity.IsDeleted = false;
+            await _entity.AddAsync(entity);
+            return await _context.SaveChangesAsync();
         }
 
-        public void Update(T obj)
+        public virtual async Task<int> UpdateAsync(TEntity entity)
         {
-            obj.UpdatedDateTime = DateTime.Now;
-            table.Attach(obj);
-            _context.Entry(obj).State = EntityState.Modified;
+            entity.UpdatedDateTime = DateTime.Now;
+            entity.UpdatedMemberId = 1;
+            entity.IsDeleted = false;
+            _entity.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+            return await _context.SaveChangesAsync();
         }
 
-        public bool Delete(object id)
+        public virtual async Task<int> DeleteAsync(int id)
         {
-            T existing = table.Find(id);
-            if (existing != null)
+            TEntity entity = await _entity.FindAsync(id);
+            if (entity != null)
             {
-                existing.DeletedDateTime = DateTime.Now;
-                existing.IsDeleted = true;
-                _context.Entry(existing).State = EntityState.Modified;
-                return true;
+                entity.DeletedDateTime = DateTime.Now;
+                entity.DeletedMemberId = 1;
+                entity.IsDeleted = true;
+                _entity.Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+                return await _context.SaveChangesAsync();
             }
-            return false;
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
+            return -1;
         }
     }
 }

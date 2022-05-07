@@ -1,14 +1,15 @@
 ﻿using GenericRepositoryExample.Models;
+using System.Linq.Expressions;
 
 namespace GenericRepositoryExample.Repositories
 {
-    public interface IGenericRepository<T> where T : BaseEntity
+    public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        IEnumerable<T> GetAll();
-        T GetById(object id);
-        void Insert(T obj);
-        void Update(T obj);
-        bool Delete(object id);
-        void Save();
+        TEntity Get(int id);
+        Task<TEntity> GetAsync(int id);
+        Task<IEnumerable<TEntity>> GetListAsync();
+        Task<int> InsertAsync(TEntity entity);
+        Task<int> UpdateAsync(TEntity entity);
+        Task<int> DeleteAsync(int id);
     }
 }

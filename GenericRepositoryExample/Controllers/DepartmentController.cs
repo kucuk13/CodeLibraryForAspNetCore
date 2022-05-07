@@ -19,9 +19,9 @@ namespace GenericRepositoryExample.Controllers
 
         [HttpGet]
         [Route("GetAll")]
-        public IEnumerable<Departmant> GetAll()
+        public async Task<IEnumerable<Departmant>> GetAll()
         {
-            return _departmentRepository.GetAll();
+            return await _departmentRepository.GetListAsync();
         }
     }
 }
