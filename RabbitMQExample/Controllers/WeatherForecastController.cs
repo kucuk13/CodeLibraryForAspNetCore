@@ -21,6 +21,9 @@ namespace RabbitMQExample.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            Receiver.Consume("test");
+            Sender.Produce("test", "Hello World!");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

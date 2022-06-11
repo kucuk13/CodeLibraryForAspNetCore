@@ -5,3 +5,6 @@
 -After that open that link "http://localhost:15672"
 username: guest
 passowrd: guest 
+
+
+-Download "RabbitMQ.Client" from nuget.
