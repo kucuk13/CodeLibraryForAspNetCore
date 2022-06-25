@@ -8,7 +8,7 @@ namespace MiddlewareExample.Middlewares
 {
     public class MainMiddleware
     {
-        RequestDelegate _next;
+        private RequestDelegate _next;
         private static readonly string UnauthorizedMessage = "Bu işlemi yapmaya yetkiniz yoktur.";
 
         public MainMiddleware(RequestDelegate next) 
@@ -23,8 +23,8 @@ namespace MiddlewareExample.Middlewares
 
             if (AuthorizeExtension.IsAuthorize(httpContext))
             {
-                var responseStream = new MemoryStream();
                 var originalBodyStream = httpContext.Response.Body;
+                var responseStream = new MemoryStream();
                 httpContext.Response.Body = responseStream;
 
                 await _next.Invoke(httpContext);
