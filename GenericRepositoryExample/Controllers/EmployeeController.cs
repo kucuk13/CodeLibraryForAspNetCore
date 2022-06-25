@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GenericRepositoryExample.Models;
 using GenericRepositoryExample.Repositories;
+using GenericRepositoryExample.Extensions;
 
 namespace GenericRepositoryExample.Controllers
 {
@@ -21,7 +22,26 @@ namespace GenericRepositoryExample.Controllers
         [Route("GetAll")]
         public async Task<IEnumerable<Employee>> GetAll()
         {
-            return await _employeeRepository.GetListAsync();
+            var employees = new List<Employee>() { 
+                new Employee()
+                {
+                    Name = "Kaan",
+                    Surname = "Küçük"
+                },
+                new Employee()
+                {
+                    Name = "Tolga",
+                    Surname = "Küçük"
+                },
+                new Employee()
+                {
+                    Name = "Burhan",
+                    Surname = "Küçük"
+                },
+
+            }.AsEnumerable();
+
+            return employees.ContainsIgnoreCase(nameof(Employee.Surname), "kÜ").Where(x => !x.IsDeleted);
         }
     }
 }

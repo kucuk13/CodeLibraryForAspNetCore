@@ -6,7 +6,7 @@ namespace MiddlewareExample.Extensions
     {
         public static IApplicationBuilder UseCustomMiddeleware(this IApplicationBuilder applicationBuilder)
         {
-            return applicationBuilder.UseMiddleware<CustomMiddleware>();
+            return applicationBuilder.UseMiddleware<MainMiddleware>();
         }
     }
 }
